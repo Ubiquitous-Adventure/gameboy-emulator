@@ -1,15 +1,12 @@
-use std::{
-    fs::File,
-    io::{Error, Read},
-    path::PathBuf,
-    time::Instant,
-};
+use std::{fs::File, io::Read, path::PathBuf, time::Instant};
 
 use clap::Parser;
 
+mod errors;
 mod instructions;
 mod parser;
 
+use errors::EmulatorError;
 use parser::parse_instructions;
 
 #[derive(Parser)]
@@ -20,7 +17,7 @@ struct Cli {
     debug: bool,
 }
 
-fn main() -> Result<(), Error> {
+fn main() -> Result<(), EmulatorError> {
     println!("Hello, gameboys!");
 
     let cli = Cli::parse();

@@ -1,15 +1,15 @@
 use std::{
     fmt::Debug,
-    io::{Bytes, Error, Read},
+    io::{Bytes, Read},
 };
 
-use crate::instructions::Instruction;
+use crate::{errors::EmulatorError, instructions::Instruction};
 
 pub fn parse_instructions(
     bytes: Bytes<impl Debug + Read>,
     size: usize,
     debug: bool,
-) -> Result<Vec<Instruction>, Error> {
+) -> Result<Vec<Instruction>, EmulatorError> {
     let mut enumerated_bytes = bytes.enumerate();
     let size_kb = size / 1024;
     let size_width = f64::log10(size_kb as f64).ceil() as usize;
