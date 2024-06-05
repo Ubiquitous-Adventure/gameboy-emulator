@@ -51,6 +51,7 @@ fn main() -> Result<(), EmulatorError> {
     if cli.debug {
         if let Some(start) = time_start {
             println!("Time taken to parse the file: {:?}", start.elapsed());
+            println!("Parsed {} instructions.", instructions.len());
         }
     }
 
