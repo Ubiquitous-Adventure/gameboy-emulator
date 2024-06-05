@@ -41,3 +41,20 @@ pub fn parse_instructions(
     }
     Ok(instructions)
 }
+
+#[cfg(test)]
+mod tests {
+    use std::io::Cursor;
+
+    use super::*;
+
+    #[test]
+    fn basic_input() {
+        let null_byte = "\x00";
+        let cursor = Cursor::new(null_byte);
+        let instructions = parse_instructions(cursor.bytes(), null_byte.len(), false);
+        assert!(instructions.is_ok());
+        let instructions = instructions.unwrap();
+        assert_eq!(instructions, vec![Instruction::Nop]);
+    }
+}
