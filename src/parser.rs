@@ -7,13 +7,13 @@ pub fn parse_instructions(
     size: usize,
     debug: bool,
 ) -> Result<Vec<Instruction>, EmulatorError> {
-    let mut enumerated_bytes = bytes.enumerate();
     let size_kb = size / 1024;
-    let size_width = f64::log10(size_kb as f64).ceil() as usize;
+    let size_digit_count = f64::log10(size_kb as f64).ceil() as usize;
 
     let mut instructions: Vec<Instruction> = Vec::with_capacity(size);
     // TODO: check how much this overallocates on average
 
+    let mut enumerated_bytes = bytes.enumerate();
     while let Some((byte_num, byte_result)) = enumerated_bytes.next() {
         let byte = byte_result?;
 
@@ -24,10 +24,10 @@ pub fn parse_instructions(
                 // print progress every kilobyte
                 let kb_num = byte_num / 1024;
                 println!(
-                    "Parsing instructions... {progress_percent:6.2}% ({kb_num:size_width$}KB/{size_kb}KB)",
+                    "Parsing instructions... {progress_percent:6.2}% ({kb_num:size_digit_count$}KB/{size_kb}KB)",
                 );
             }
-            println!("Byte: '{:0>8b}' ('{:0>2x}')", byte, byte);
+            println!("Byte: '{byte:0>8b}' ('{byte:0>2x}')");
         }
 
         let instruction = match byte {
