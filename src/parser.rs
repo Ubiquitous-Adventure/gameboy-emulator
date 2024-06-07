@@ -1,12 +1,9 @@
-use std::{
-    fmt::Debug,
-    io::{Bytes, Read},
-};
+use std::io::{Bytes, Read};
 
 use crate::{errors::EmulatorError, instructions::Instruction};
 
 pub fn parse_instructions(
-    bytes: Bytes<impl Debug + Read>,
+    bytes: Bytes<impl Read>,
     size: usize,
     debug: bool,
 ) -> Result<Vec<Instruction>, EmulatorError> {
