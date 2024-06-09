@@ -1,3 +1,4 @@
+mod instructions;
 mod parse;
 use parse::read_file;
 use std::env;
