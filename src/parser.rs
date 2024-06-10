@@ -17,9 +17,9 @@ pub fn parse_instructions(
     while let Some((byte_num, byte_result)) = enumerated_bytes.next() {
         let byte = byte_result?;
 
-        let progress = byte_num as f64 / size as f64;
-        let progress_percent = progress * 100.0;
         if debug {
+            let progress = byte_num as f64 / size as f64;
+            let progress_percent = progress * 100.0;
             if byte_num % 1024 == 0 {
                 // print progress every kilobyte
                 let kb_num = byte_num / 1024;
