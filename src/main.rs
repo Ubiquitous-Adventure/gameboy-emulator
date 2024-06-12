@@ -1,6 +1,6 @@
 mod instructions;
 mod parse;
-use parse::read_file;
+use parse::read_file_to_bytes;
 use std::env;
 use std::fs;
 use std::io;
@@ -24,7 +24,7 @@ fn main() -> Result<(), io::Error> {
             format!("File {} not found", argument),
         ));
     }
-    let bytes = read_file(argument)?;
+    let bytes: Vec<u8> = read_file_to_bytes(argument)?;
 
     Ok(())
 }
