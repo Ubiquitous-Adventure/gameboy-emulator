@@ -17,7 +17,14 @@ struct Cli {
     debug: bool,
 }
 
-fn main() -> Result<(), EmulatorError> {
+fn main() {
+    let result = run();
+    if let Err(error) = result {
+        println!("{}", error);
+    }
+}
+
+fn run() -> Result<(), EmulatorError> {
     if cfg!(target_endian = "big") {
         return Err(EmulatorError::PlatformError(
             "This emulator only supports little endianness.".to_string(),
@@ -33,7 +40,7 @@ fn main() -> Result<(), EmulatorError> {
             .to_str()
             .expect("Game file path should be valid string")
     );
-    println!("Debug mode: {:?}", cli.debug);
+    println!("Debug mode: {}", cli.debug);
 
     if !cli.game_file.is_file() {
         println!("Provided path is not a file");
