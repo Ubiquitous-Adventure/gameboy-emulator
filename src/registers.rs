@@ -26,6 +26,7 @@ enum R16Kind {
     SP,
 }
 
+// NOTE: This assumes little endianness. For big endianness these would need to be swapped.
 const MOST_SIGNIFICANT_BYTE: usize = 1;
 const LEAST_SIGNIFICANT_BYTE: usize = 0;
 
