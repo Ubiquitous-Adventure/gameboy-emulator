@@ -135,3 +135,69 @@ impl Registers {
         unsafe { &mut *pointer }
     }
 }
+
+#[cfg(test)]
+mod test {
+    use crate::registers::{FlagKind, R16Kind, R8Kind, Registers};
+
+    #[test]
+    fn r16_access() {
+        let mut r = Registers::new();
+        assert_eq!(r.get_r16(R16Kind::AF), 0);
+        assert_eq!(r.get_r16(R16Kind::BC), 0);
+        assert_eq!(r.get_r16(R16Kind::DE), 0);
+        assert_eq!(r.get_r16(R16Kind::HL), 0);
+        assert_eq!(r.get_r16(R16Kind::SP), 0);
+        *r.get_mut_r16(R16Kind::AF) = 300;
+        *r.get_mut_r16(R16Kind::BC) = 400;
+        *r.get_mut_r16(R16Kind::DE) = 500;
+        *r.get_mut_r16(R16Kind::HL) = 600;
+        *r.get_mut_r16(R16Kind::SP) = 700;
+        assert_eq!(r.get_r16(R16Kind::AF), 300);
+        assert_eq!(r.get_r16(R16Kind::BC), 400);
+        assert_eq!(r.get_r16(R16Kind::DE), 500);
+        assert_eq!(r.get_r16(R16Kind::HL), 600);
+        assert_eq!(r.get_r16(R16Kind::SP), 700);
+    }
+
+    #[test]
+    fn mixed_access_af() {
+        let mut r = Registers::new();
+        *r.get_mut_r16(R16Kind::AF) = 0b0000_0001_1010_0000;
+        assert_eq!(r.get_r16(R16Kind::AF), 0b0000_0001_1010_0000);
+        assert_eq!(r.get_r8(R8Kind::A), 1);
+        assert!(r.get_flag(FlagKind::Z));
+        assert!(!r.get_flag(FlagKind::N));
+        assert!(r.get_flag(FlagKind::H));
+        assert!(!r.get_flag(FlagKind::C));
+    }
+
+    #[test]
+    fn mixed_access_bc() {
+        let mut r = Registers::new();
+        *r.get_mut_r8(R8Kind::B) = 1;
+        *r.get_mut_r8(R8Kind::C) = 2;
+        assert_eq!(r.get_r16(R16Kind::BC), 258);
+        assert_eq!(r.get_r8(R8Kind::B), 1);
+        assert_eq!(r.get_r8(R8Kind::C), 2);
+    }
+
+    #[test]
+    fn mixed_access_de() {
+        let mut r = Registers::new();
+        *r.get_mut_r8(R8Kind::D) = 1;
+        *r.get_mut_r8(R8Kind::E) = 2;
+        assert_eq!(r.get_r16(R16Kind::DE), 258);
+        assert_eq!(r.get_r8(R8Kind::D), 1);
+        assert_eq!(r.get_r8(R8Kind::E), 2);
+    }
+
+    #[test]
+    fn mixed_access_hl() {
+        let mut r = Registers::new();
+        *r.get_mut_r16(R16Kind::HL) = 258;
+        assert_eq!(r.get_r16(R16Kind::HL), 258);
+        assert_eq!(r.get_r8(R8Kind::H), 1);
+        assert_eq!(r.get_r8(R8Kind::L), 2);
+    }
+}
