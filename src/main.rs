@@ -18,6 +18,12 @@ struct Cli {
 }
 
 fn main() -> Result<(), EmulatorError> {
+    if cfg!(target_endian = "big") {
+        return Err(EmulatorError::PlatformError(
+            "This emulator only supports little endianness.".to_string(),
+        ));
+    }
+
     println!("Hello, gameboys!");
 
     let cli = Cli::parse();
