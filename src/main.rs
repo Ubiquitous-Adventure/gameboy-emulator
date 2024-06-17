@@ -1,4 +1,4 @@
-use std::{fs::File, io::Read, path::PathBuf, time::Instant};
+use std::{fs::File, io::Read, path::PathBuf, process::ExitCode, time::Instant};
 
 use clap::Parser;
 
@@ -17,11 +17,13 @@ struct Cli {
     debug: bool,
 }
 
-fn main() {
+fn main() -> ExitCode {
     let result = run();
     if let Err(error) = result {
         println!("{}", error);
+        return ExitCode::FAILURE;
     }
+    ExitCode::SUCCESS
 }
 
 fn run() -> Result<(), EmulatorError> {
