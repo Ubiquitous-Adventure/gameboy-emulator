@@ -1,4 +1,4 @@
-use std::{fs::File, io::Read, path::PathBuf, time::Instant};
+use std::{fs::File, io::Read, path::PathBuf, process::ExitCode, time::Instant};
 
 use clap::Parser;
 
@@ -17,7 +17,22 @@ struct Cli {
     debug: bool,
 }
 
-fn main() -> Result<(), EmulatorError> {
+fn main() -> ExitCode {
+    let result = run();
+    if let Err(error) = result {
+        println!("{}", error);
+        return ExitCode::FAILURE;
+    }
+    ExitCode::SUCCESS
+}
+
+fn run() -> Result<(), EmulatorError> {
+    if cfg!(target_endian = "big") {
+        return Err(EmulatorError::PlatformError(
+            "This emulator only supports little endianness.".to_string(),
+        ));
+    }
+
     println!("Hello, gameboys!");
 
     let cli = Cli::parse();
@@ -27,7 +42,7 @@ fn main() -> Result<(), EmulatorError> {
             .to_str()
             .expect("Game file path should be valid string")
     );
-    println!("Debug mode: {:?}", cli.debug);
+    println!("Debug mode: {}", cli.debug);
 
     if !cli.game_file.is_file() {
         println!("Provided path is not a file");

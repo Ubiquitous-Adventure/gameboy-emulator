@@ -4,6 +4,8 @@ use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum EmulatorError {
-    #[error("IO-Error: {0}")]
+    #[error("IOError: {0}")]
     IoError(#[from] io::Error),
+    #[error("PlatformError: {0}")]
+    PlatformError(String),
 }
