@@ -5,6 +5,7 @@ use clap::Parser;
 mod errors;
 mod instructions;
 mod parser;
+mod registers;
 
 use errors::EmulatorError;
 use parser::parse_instructions;
