@@ -1,39 +1,70 @@
 use std::io::{Bytes, Read};
 
-use crate::{errors::EmulatorError, instructions::Instruction};
+use gameboy_emulator::bits;
+use itertools::Itertools;
+
+use crate::{
+    errors::EmulatorError,
+    instructions::{Instruction, R16MemOperand, R16Operand},
+};
+
+fn get_prefix_instruction(bytes: &mut Bytes<impl Read>) -> Result<u8, EmulatorError> {
+    let instruction_byte = bytes.next().expect("instruction after prefix")?;
+    Ok(instruction_byte)
+}
+
+fn get_8bit_immediate(bytes: &mut Bytes<impl Read>) -> Result<u8, EmulatorError> {
+    let immediate = bytes.next().expect("8-bit immediate")?;
+    Ok(immediate)
+}
+
+fn get_16bit_immediate(bytes: &mut Bytes<impl Read>) -> Result<u16, EmulatorError> {
+    let (imm_byte1, imm_byte2) = bytes.next_tuple().expect("16-bit immediate");
+    let immediate: u16 = ((imm_byte1? as u16) << 8) + (imm_byte2? as u16);
+    Ok(immediate)
+}
 
 pub fn parse_instructions(
-    bytes: Bytes<impl Read>,
+    mut bytes: Bytes<impl Read>,
     size: usize,
     debug: bool,
 ) -> Result<Vec<Instruction>, EmulatorError> {
-    let size_kb = size / 1024;
-    let size_digit_count = f64::log10(size_kb as f64).ceil() as usize;
-
     let mut instructions: Vec<Instruction> = Vec::with_capacity(size);
-    // TODO: check how much this overallocates on average
 
-    let mut enumerated_bytes = bytes.enumerate();
-    while let Some((byte_num, byte_result)) = enumerated_bytes.next() {
+    while let Some(byte_result) = bytes.next() {
         let byte = byte_result?;
 
         if debug {
-            let progress = byte_num as f64 / size as f64;
-            let progress_percent = progress * 100.0;
-            if byte_num % 1024 == 0 {
-                // print progress every kilobyte
-                let kb_num = byte_num / 1024;
-                println!(
-                    "Parsing instructions... {progress_percent:6.2}% ({kb_num:size_digit_count$}KB/{size_kb}KB)",
-                );
-            }
-            println!("Byte: '{byte:0>8b}' ('{byte:0>2x}')");
+            println!("Byte: '{byte:0>#8b}' ('{byte:0>#2x}')");
         }
 
         let instruction = match byte {
-            0 => Instruction::Nop,
-            _ => todo!("Instruction '{byte:0>8b}' ('{byte:0>2x}')"),
+            bits!(00000000) => Instruction::Nop,
+            bits!(00__0001) => {
+                let operand = (byte >> 4) & 0b11;
+                Instruction::LoadImm16 {
+                    reg: R16Operand::from(operand),
+                    imm: get_16bit_immediate(&mut bytes)?,
+                }
+            }
+            bits!(00__0010) => {
+                let operand = (byte >> 4) & 0b11;
+                Instruction::StoreARegToMem {
+                    mem: R16MemOperand::from(operand),
+                }
+            }
+            bits!(00__1010) => {
+                let operand = (byte >> 4) & 0b11;
+                Instruction::LoadMemToAReg {
+                    mem: R16MemOperand::from(operand),
+                }
+            }
+            bits!(00001000) => Instruction::StoreSPToImmMem {
+                imm: get_16bit_immediate(&mut bytes)?,
+            },
+            _ => todo!("Instruction: '{byte:0>#8b}' ('{byte:0>#2x}')"),
         };
+
         instructions.push(instruction);
     }
     Ok(instructions)

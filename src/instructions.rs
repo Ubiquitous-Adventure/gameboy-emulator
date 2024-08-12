@@ -123,13 +123,13 @@ pub enum Instruction {
     /// nop - do nothing
     Nop,
     /// ld r16, imm16 - load 16-bit immediate into 16-bit register
-    LoadImm16 { dst: R16Operand, imm: u16 },
+    LoadImm16 { reg: R16Operand, imm: u16 },
     /// ld [r16mem], a - store 8-bit value from A register into byte pointed to by 16-bit register
-    StoreARegToMem { dst: R16MemOperand },
+    StoreARegToMem { mem: R16MemOperand },
     /// ld a, [r16mem] - load 8-bit value from byte pointed to by 16-bit register into A register
-    LoadMemToAReg { dst: R16MemOperand },
+    LoadMemToAReg { mem: R16MemOperand },
     /// ld [imm16], sp - store 16-bit stack pointer into the two bytes pointed to by immediate
-    StoreSPToImmMem { dst: u16 },
+    StoreSPToImmMem { imm: u16 },
     /// inc r16 - increment 16-bit register
     IncR16 { reg: R16Operand },
     /// dec r16 - decrement 16-bit register
