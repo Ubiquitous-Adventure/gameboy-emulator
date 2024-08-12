@@ -18,12 +18,36 @@ pub enum R16Operand {
     SP,
 }
 
+impl From<u8> for R16Operand {
+    fn from(value: u8) -> Self {
+        match value {
+            0 => Self::BCReg,
+            1 => Self::DEReg,
+            2 => Self::HLReg,
+            3 => Self::SP,
+            _ => unreachable!("R16 operands must be 2 bits"),
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum R16StkOperand {
     BCReg,
     DEReg,
     HLReg,
     AFReg,
+}
+
+impl From<u8> for R16StkOperand {
+    fn from(value: u8) -> Self {
+        match value {
+            0 => Self::BCReg,
+            1 => Self::DEReg,
+            2 => Self::HLReg,
+            3 => Self::AFReg,
+            _ => unreachable!("R16 stack operands must be 2 bits"),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -34,12 +58,36 @@ pub enum R16MemOperand {
     HLRegAndDec,
 }
 
+impl From<u8> for R16MemOperand {
+    fn from(value: u8) -> Self {
+        match value {
+            0 => Self::BCReg,
+            1 => Self::DEReg,
+            2 => Self::HLRegAndInc,
+            3 => Self::HLRegAndDec,
+            _ => unreachable!("R16 memory operands must be 2 bits"),
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CondOperand {
     NZ,
     Z,
     NC,
     C,
+}
+
+impl From<u8> for CondOperand {
+    fn from(value: u8) -> Self {
+        match value {
+            0 => Self::NZ,
+            1 => Self::Z,
+            2 => Self::NC,
+            3 => Self::C,
+            _ => unreachable!("Condition operands must be 2 bits"),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -52,6 +100,22 @@ pub enum U3Operand {
     Five = 5,
     Six = 6,
     Seven = 7,
+}
+
+impl From<u8> for U3Operand {
+    fn from(value: u8) -> Self {
+        match value {
+            0 => Self::Zero,
+            1 => Self::One,
+            2 => Self::Two,
+            3 => Self::Three,
+            4 => Self::Four,
+            5 => Self::Five,
+            6 => Self::Six,
+            7 => Self::Seven,
+            _ => unreachable!("U3 operands must be 3 bits"),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
