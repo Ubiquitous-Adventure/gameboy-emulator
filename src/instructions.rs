@@ -10,6 +10,22 @@ pub enum R8Operand {
     HLAddr,
 }
 
+impl From<u8> for R8Operand {
+    fn from(value: u8) -> Self {
+        match value {
+            0 => Self::BReg,
+            1 => Self::CReg,
+            2 => Self::DReg,
+            3 => Self::EReg,
+            4 => Self::HReg,
+            5 => Self::LReg,
+            6 => Self::HLAddr,
+            7 => Self::AReg,
+            _ => unreachable!("R16 operands must be 3 bits"),
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum R16Operand {
     BCReg,

@@ -80,6 +80,25 @@ pub fn parse_instructions(
                     reg: R16Operand::from(operand),
                 }
             }
+            bits!(00___100) => {
+                let operand = (byte >> 3) & 0b111;
+                Instruction::IncR8 {
+                    reg: R8Operand::from(operand),
+                }
+            }
+            bits!(00___101) => {
+                let operand = (byte >> 3) & 0b111;
+                Instruction::DecR8 {
+                    reg: R8Operand::from(operand),
+                }
+            }
+            bits!(00___110) => {
+                let operand = (byte >> 3) & 0b111;
+                Instruction::LoadImm8 {
+                    dst: R8Operand::from(operand),
+                    imm: get_8bit_immediate(&mut bytes)?,
+                }
+            }
             _ => todo!("Instruction: '{byte:0>#8b}' ('{byte:0>#2x}')"),
         };
 
