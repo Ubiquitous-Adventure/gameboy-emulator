@@ -5,7 +5,7 @@ use itertools::Itertools;
 
 use crate::{
     errors::EmulatorError,
-    instructions::{Instruction, R16MemOperand, R16Operand, R8Operand},
+    instructions::{CondOperand, Instruction, R16MemOperand, R16Operand, R8Operand},
 };
 
 fn get_prefix_instruction(bytes: &mut Bytes<impl Read>) -> Result<u8, io::Error> {
@@ -107,6 +107,20 @@ pub fn parse_instructions(
             bits!(00101111) => Instruction::InvA,
             bits!(00110111) => Instruction::SetC,
             bits!(00111111) => Instruction::InvC,
+            bits!(00011000) => {
+                let immediate = get_8bit_immediate(&mut bytes)?;
+                Instruction::JumpRelativeImm {
+                    imm: i8::from_le_bytes(immediate.to_le_bytes()),
+                }
+            }
+            bits!(001__000) => {
+                let operand = (byte >> 3) & 0b11;
+                let immediate = get_8bit_immediate(&mut bytes)?;
+                Instruction::JumpRelativeImmUnderCond {
+                    cond: CondOperand::from(operand),
+                    imm: i8::from_le_bytes(immediate.to_le_bytes()),
+                }
+            }
             _ => todo!("Instruction: '{byte:0>#8b}' ('{byte:0>#2x}')"),
         };
 

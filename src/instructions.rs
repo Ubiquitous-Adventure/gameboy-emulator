@@ -174,10 +174,10 @@ pub enum Instruction {
     SetC,
     /// ccf - invert carry flag
     InvC,
-    /// jr imm16 - jump to address with signed 16-bit immediate offset
+    /// jr imm8 - jump to address with signed 8-bit immediate offset
     JumpRelativeImm { imm: i8 },
-    /// jr cond, imm16 - jump to address with signed 16-bit immediate offset if condition is met
-    JumpRelativeImmUnderCond { imm: i8 },
+    /// jr cond, imm8 - jump to address with signed 8-bit immediate offset if condition is met
+    JumpRelativeImmUnderCond { cond: CondOperand, imm: i8 },
     /// stop - do nothing but is (often) considered a two-byte instruction
     Stop,
     /// ld r8dst, r8src - load value from 8-bit register into another 8-bit register
