@@ -25,3 +25,17 @@ fn mixed_bitstring_matching() {
         }
     }
 }
+
+#[test]
+fn bitstring_matching_large_suffix() {
+    for i in 0..=u8::MAX {
+        match i {
+            bits!(01______) => {
+                assert!((0b01000000..0b10000000).contains(&i));
+            }
+            _ => {
+                assert!(!(0b01000000..0b10000000).contains(&i));
+            }
+        }
+    }
+}

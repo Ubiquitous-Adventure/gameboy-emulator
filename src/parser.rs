@@ -121,6 +121,16 @@ pub fn parse_instructions(
                     imm: i8::from_le_bytes(immediate.to_le_bytes()),
                 }
             }
+            bits!(00010000) => Instruction::Stop,
+            bits!(01______) if byte != 0b01110110 => {
+                let dst_operand = (byte >> 3) & 0b111;
+                let src_operand = byte & 0b111;
+                Instruction::LoadR8ToR8 {
+                    dst: R8Operand::from(dst_operand),
+                    src: R8Operand::from(src_operand),
+                }
+            }
+            bits!(01110110) => Instruction::Halt,
             _ => todo!("Instruction: '{byte:0>#8b}' ('{byte:0>#2x}')"),
         };
 
