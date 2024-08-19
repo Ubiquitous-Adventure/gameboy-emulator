@@ -99,6 +99,14 @@ pub fn parse_instructions(
                     imm: get_8bit_immediate(&mut bytes)?,
                 }
             }
+            bits!(00000111) => Instruction::RotARegLeftSetC,
+            bits!(00001111) => Instruction::RotARegRightSetC,
+            bits!(00010111) => Instruction::RotARegLeftThroughC,
+            bits!(00011111) => Instruction::RotARegRightThroughC,
+            bits!(00100111) => Instruction::DecAdjAccum,
+            bits!(00101111) => Instruction::InvA,
+            bits!(00110111) => Instruction::SetC,
+            bits!(00111111) => Instruction::InvC,
             _ => todo!("Instruction: '{byte:0>#8b}' ('{byte:0>#2x}')"),
         };
 
