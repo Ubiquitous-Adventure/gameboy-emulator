@@ -1,24 +1,24 @@
-use std::io::{Bytes, Read};
+use std::io::{self, Bytes, Read};
 
 use gameboy_emulator::bits;
 use itertools::Itertools;
 
 use crate::{
     errors::EmulatorError,
-    instructions::{Instruction, R16MemOperand, R16Operand},
+    instructions::{Instruction, R16MemOperand, R16Operand, R8Operand},
 };
 
-fn get_prefix_instruction(bytes: &mut Bytes<impl Read>) -> Result<u8, EmulatorError> {
+fn get_prefix_instruction(bytes: &mut Bytes<impl Read>) -> Result<u8, io::Error> {
     let instruction_byte = bytes.next().expect("instruction after prefix")?;
     Ok(instruction_byte)
 }
 
-fn get_8bit_immediate(bytes: &mut Bytes<impl Read>) -> Result<u8, EmulatorError> {
+fn get_8bit_immediate(bytes: &mut Bytes<impl Read>) -> Result<u8, io::Error> {
     let immediate = bytes.next().expect("8-bit immediate")?;
     Ok(immediate)
 }
 
-fn get_16bit_immediate(bytes: &mut Bytes<impl Read>) -> Result<u16, EmulatorError> {
+fn get_16bit_immediate(bytes: &mut Bytes<impl Read>) -> Result<u16, io::Error> {
     let (imm_byte1, imm_byte2) = bytes.next_tuple().expect("16-bit immediate");
     let immediate: u16 = ((imm_byte1? as u16) << 8) + (imm_byte2? as u16);
     Ok(immediate)
