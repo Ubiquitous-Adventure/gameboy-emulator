@@ -205,9 +205,9 @@ pub enum Instruction {
     /// adc a, imm8 - add 8-bit immediate plus the carry flag to the A register
     AddImmCToAReg { imm: u8 },
     /// sub a, imm8 - subtract 8-bit immediate from the A register
-    SubImmFromAReg { reg: R8Operand },
+    SubImmFromAReg { imm: u8 },
     /// sbc a, imm8 - subtract 8-bit immediate and the carry flag from the A register
-    SubImmCFromAReg { reg: R8Operand },
+    SubImmCFromAReg { imm: u8 },
     /// and a, imm8 - bitwise and between 8-bit register and the A register
     AndImmToAReg { imm: u8 },
     /// xor a, imm8 - bitwise xor between 8-bit register and the A register

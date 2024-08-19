@@ -131,6 +131,55 @@ pub fn parse_instructions(
                 }
             }
             bits!(01110110) => Instruction::Halt,
+            bits!(10000___) => Instruction::AddRegToAReg {
+                reg: R8Operand::from(byte & 0b111),
+            },
+            bits!(10001___) => Instruction::AddRegCToAReg {
+                reg: R8Operand::from(byte & 0b111),
+            },
+            bits!(10010___) => Instruction::SubRegFromAReg {
+                reg: R8Operand::from(byte & 0b111),
+            },
+            bits!(10011___) => Instruction::SubRegCFromAReg {
+                reg: R8Operand::from(byte & 0b111),
+            },
+            bits!(10100___) => Instruction::AndRegToAReg {
+                reg: R8Operand::from(byte & 0b111),
+            },
+            bits!(10101___) => Instruction::XorRegToAReg {
+                reg: R8Operand::from(byte & 0b111),
+            },
+            bits!(10110___) => Instruction::OrRegToAReg {
+                reg: R8Operand::from(byte & 0b111),
+            },
+            bits!(10111___) => Instruction::CmpRegToAReg {
+                reg: R8Operand::from(byte & 0b111),
+            },
+            bits!(11000___) => Instruction::AddImmToAReg {
+                imm: get_8bit_immediate(&mut bytes)?,
+            },
+            bits!(11001___) => Instruction::AddImmCToAReg {
+                imm: get_8bit_immediate(&mut bytes)?,
+            },
+            bits!(11010___) => Instruction::SubImmFromAReg {
+                imm: get_8bit_immediate(&mut bytes)?,
+            },
+            bits!(11011___) => Instruction::SubImmCFromAReg {
+                imm: get_8bit_immediate(&mut bytes)?,
+            },
+            bits!(11100___) => Instruction::AndImmToAReg {
+                imm: get_8bit_immediate(&mut bytes)?,
+            },
+            bits!(11101___) => Instruction::XorImmToAReg {
+                imm: get_8bit_immediate(&mut bytes)?,
+            },
+            bits!(11110___) => Instruction::OrImmToAReg {
+                imm: get_8bit_immediate(&mut bytes)?,
+            },
+            bits!(11111___) => Instruction::CmpImmToAReg {
+                imm: get_8bit_immediate(&mut bytes)?,
+            },
+
             _ => todo!("Instruction: '{byte:0>#8b}' ('{byte:0>#2x}')"),
         };
 
