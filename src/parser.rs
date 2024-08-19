@@ -1,24 +1,21 @@
-use std::io::{self, Bytes, Read};
+use std::io::{Bytes, Error, Read};
 
 use gameboy_emulator::bits;
 use itertools::Itertools;
 
-use crate::{
-    errors::EmulatorError,
-    instructions::{CondOperand, Instruction, R16MemOperand, R16Operand, R8Operand},
-};
+use crate::instructions::{CondOperand, Instruction, R16MemOperand, R16Operand, R8Operand};
 
-fn get_prefix_instruction(bytes: &mut Bytes<impl Read>) -> Result<u8, io::Error> {
+fn get_prefix_instruction(bytes: &mut Bytes<impl Read>) -> Result<u8, Error> {
     let instruction_byte = bytes.next().expect("instruction after prefix")?;
     Ok(instruction_byte)
 }
 
-fn get_8bit_immediate(bytes: &mut Bytes<impl Read>) -> Result<u8, io::Error> {
+fn get_8bit_immediate(bytes: &mut Bytes<impl Read>) -> Result<u8, Error> {
     let immediate = bytes.next().expect("8-bit immediate")?;
     Ok(immediate)
 }
 
-fn get_16bit_immediate(bytes: &mut Bytes<impl Read>) -> Result<u16, io::Error> {
+fn get_16bit_immediate(bytes: &mut Bytes<impl Read>) -> Result<u16, Error> {
     let (imm_byte1, imm_byte2) = bytes.next_tuple().expect("16-bit immediate");
     let immediate: u16 = ((imm_byte1? as u16) << 8) + (imm_byte2? as u16);
     Ok(immediate)
@@ -28,7 +25,7 @@ pub fn parse_instructions(
     mut bytes: Bytes<impl Read>,
     size: usize,
     debug: bool,
-) -> Result<Vec<Instruction>, EmulatorError> {
+) -> Result<Vec<Instruction>, Error> {
     let mut instructions: Vec<Instruction> = Vec::with_capacity(size);
 
     while let Some(byte_result) = bytes.next() {
