@@ -135,7 +135,7 @@ pub enum Instruction {
     /// dec r16 - decrement 16-bit register
     DecR16 { reg: R16Operand },
     /// add hl, r16 - add value from 16-bit register to HL register
-    AddToHLReg { reg: R16Operand },
+    AddRegToHLReg { reg: R16Operand },
     /// inc r8 - increment 8-bit register
     IncR8 { reg: R8Operand },
     /// dec r8 - decrement 8-bit register

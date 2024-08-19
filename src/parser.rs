@@ -62,6 +62,24 @@ pub fn parse_instructions(
             bits!(00001000) => Instruction::StoreSPToImmMem {
                 imm: get_16bit_immediate(&mut bytes)?,
             },
+            bits!(00__0011) => {
+                let operand = (byte >> 4) & 0b11;
+                Instruction::IncR16 {
+                    reg: R16Operand::from(operand),
+                }
+            }
+            bits!(00__1011) => {
+                let operand = (byte >> 4) & 0b11;
+                Instruction::DecR16 {
+                    reg: R16Operand::from(operand),
+                }
+            }
+            bits!(00__1001) => {
+                let operand = (byte >> 4) & 0b11;
+                Instruction::AddRegToHLReg {
+                    reg: R16Operand::from(operand),
+                }
+            }
             _ => todo!("Instruction: '{byte:0>#8b}' ('{byte:0>#2x}')"),
         };
 
